@@ -1,4 +1,4 @@
-package com.elyeproj.bottombarfragmentsswitching
+package com.elyeproj.bottombarfragmentsswitching.ui.main
 
 import android.os.Bundle
 import androidx.annotation.IdRes
@@ -6,13 +6,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import android.util.SparseArray
-import android.view.MenuItem
+import com.elyeproj.bottombarfragmentsswitching.ui.container.ContainerFragment
+import com.elyeproj.bottombarfragmentsswitching.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var savedStateSparseArray = SparseArray<Fragment.SavedState>()
-    private var currentSelectItemId = R.id.navigation_home
+
+    private var savedStateSparseArray = SparseArray<Fragment.SavedState>() //todo understand sparse array DS
+    private var currentSelectItemId =
+        R.id.navigation_home
     companion object {
         const val SAVED_STATE_CONTAINER_KEY = "ContainerKey"
         const val SAVED_STATE_CURRENT_TAB_KEY = "CurrentTabKey"
@@ -39,10 +42,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
-            savedStateSparseArray = savedInstanceState.getSparseParcelableArray(SAVED_STATE_CONTAINER_KEY)
+            savedStateSparseArray = savedInstanceState.getSparseParcelableArray(
+                SAVED_STATE_CONTAINER_KEY
+            )
                 ?: savedStateSparseArray
             currentSelectItemId = savedInstanceState.getInt(SAVED_STATE_CURRENT_TAB_KEY)
         }
+
         setContentView(R.layout.activity_main)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
@@ -69,20 +75,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun swapFragments(@IdRes actionId: Int, key: String, color: String) {
         if (supportFragmentManager.findFragmentByTag(key) == null) {
-            savedFragmentState(actionId)
+            saveFragmentState(actionId)
             createFragment(key, color, actionId)
         }
     }
 
     private fun createFragment(key: String, color: String, actionId: Int) {
-        val fragment = ContainerFragment.newInstance(key, color)
+        val fragment =
+            ContainerFragment.newInstance(
+                key,
+                color
+            )
         fragment.setInitialSavedState(savedStateSparseArray[actionId])
         supportFragmentManager.beginTransaction()
             .replace(R.id.container_fragment, fragment, key)
             .commit()
     }
 
-    private fun savedFragmentState(actionId: Int) {
+    private fun saveFragmentState(actionId: Int) {
         val currentFragment = supportFragmentManager.findFragmentById(R.id.container_fragment)
         if (currentFragment != null) {
             savedStateSparseArray.put(currentSelectItemId,
