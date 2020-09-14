@@ -72,9 +72,9 @@ class ContainerFragment : Fragment(),
                 childFragmentManager.beginTransaction()
                     .replace(
                         R.id.container_fragment,
-                        ChildFragment.newInstance(
-                            childKey
-                        ), childKey)
+                        ChildFragment.newInstance(childKey),
+                        childKey
+                    )
                     .addToBackStack(childKey)
                     .commit()
             }
